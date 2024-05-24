@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { selectNameFilter } from '../../redux/contacts/selectors';
-import { changeFilter } from '../../redux/contacts/filtersSlice';
+import { changeFilter } from '../../redux/filters/slice';
 import { Box, TextField } from "@mui/material";
 
 const SearchBox = () => {
