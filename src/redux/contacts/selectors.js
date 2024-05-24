@@ -1,53 +1,27 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from "axios";
+import { createSelector } from "@reduxjs/toolkit";
+import Fuse from "fuse.js";
 
-axios.defaults.baseURL = "https://connections-api.herokuapp.com";
+export const selectIsLoading = (state) => state.contacts.isLoading;
 
+export const selectError = (state) => state.contacts.error;
 
-export const fetchContacts = createAsyncThunk(
-    'contacts/fetchAll',
-    async (_, thunkAPI) => {
-      try {
-        const response = await axios.get('/contacts');
-        return response.data;
-      } catch (e) {
-        return thunkAPI.rejectWithValue(e.message);
+export const selectContacts = (state) => state.contacts.items;
+
+export const selectNameFilter = (state) => state.filters.name;
+
+export const selectVisibleContacts = createSelector(
+  [selectContacts, selectNameFilter],
+  (contacts, filter) => {
+    if (filter.length > 0) {
+      const fuseOption = {
+        isCaseSensitive: false,
+        keys: ['name', 'number'],
       }
+      const fuse = new Fuse(contacts, fuseOption);
+      const data = fuse.search(filter);
+      return data.map(item => {return item.item});
+    } else {
+      return contacts;
     }
-  );
-  
-  export const addContact = createAsyncThunk(
-    'contacts/addContact',
-    async (values, thunkAPI) => {
-      try {
-        const response = await axios.post('/contacts', { name: values.name, number: values.number });
-        return response.data;
-      } catch (e) {
-        return thunkAPI.rejectWithValue(e.message);
-      }
-    }
-  );
-  
-  export const deleteContact = createAsyncThunk(
-    'contacts/deleteContact',
-    async (contactId, thunkAPI) => {
-      try {
-        const response = await axios.delete(`/contacts/${contactId}`);
-        return response.data;
-      } catch (e) {
-        return thunkAPI.rejectWithValue(e.message);
-      }
-    }
-  );
-  
-  export const updateContact = createAsyncThunk(
-    'contacts/updateContact',
-    async (values, thunkAPI) => {
-      try {
-        const response = await axios.patch(`/contacts/${values.id}`, { name: values.name, number: values.number });
-        return response.data;
-      } catch (e) {
-        return thunkAPI.rejectWithValue(e.message);
-      }
-    }
-  );
+  }
+);
