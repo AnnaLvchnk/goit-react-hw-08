@@ -3,7 +3,7 @@ import { selectVisibleContacts } from '../../redux/contacts/selectors';
 import Contact from "../Contact/Contact";
 import { List } from '@mui/material';
 
-const ContactList = () => {
+export default function ContactList() {
 
   const contacts = useSelector(selectVisibleContacts);
 
@@ -17,5 +17,3 @@ const ContactList = () => {
   )
 
 }
-
-export default ContactList;
