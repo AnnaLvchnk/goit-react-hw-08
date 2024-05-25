@@ -1,35 +1,26 @@
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../../hooks";
-import Link from "@mui/material/Link";
-import MenuList from '@mui/material/MenuList';
+import clsx from "clsx";
+import css from "./Navigation.module.css";
+import { useSelector } from "react-redux";
+import { selectIsLoggedIn } from "../../redux/auth/selectors";
 
-const Navigation = () => {
-  const { isLoggedIn } = useAuth();
-
-  return (
-    <MenuList open sx={{flexGrow: 1, display:"flex", gap:"36px"}}>
-      <Link
-        component={NavLink}
-        to={"/"}
-        color="inherit"
-        underline="none"
-        variant="h6"
-      >
-        Home
-      </Link>
-      {isLoggedIn && (
-        <Link
-          component={NavLink}
-          to={"/contacts"}
-          color="inherit"
-          underline="none"
-          variant="h6"
-        >
-          Phonebook
-        </Link>
-      )}
-    </MenuList>
-  );
+const getNavLinkClass = ({ isActive }) => {
+  return clsx(css.link, isActive && css.active);
 };
 
-export default Navigation;
+export default function Navigation() {
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+
+  return (
+    <nav className={css.wrapper}>
+      <NavLink to="/" className={getNavLinkClass}>
+        Home
+      </NavLink>
+      {isLoggedIn && (
+        <NavLink to="/contacts" className={getNavLinkClass}>
+          Contacts
+        </NavLink>
+      )}
+    </nav>
+  );
+}

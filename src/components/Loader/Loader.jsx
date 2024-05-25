@@ -1,7 +1,18 @@
-import LinearProgress from "@mui/material/LinearProgress";
+import css from "./Loader.module.css";
+import { Hearts } from "react-loader-spinner";
 
-const Loader = () => {
-  return <LinearProgress color="primary" variant="indeterminate" sx={{mt:2}} />;
-};
-
-export default Loader;
+export default function Loader() {
+  return (
+    <div className={css.container}>
+      <Hearts
+        height="70"
+        width="70"
+        color="yellow"
+        ariaLabel="hearts-loading"
+        wrapperStyle={{}}
+        wrapperClass=""
+        visible={true}
+      />
+    </div>
+  );
+}

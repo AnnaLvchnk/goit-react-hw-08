@@ -1,0 +1,23 @@
+.link {
+    color: white;
+    text-decoration: none;
+}
+
+.link:hover,
+.link:focus {
+    color: #00ccff;
+}
+
+.active {
+    color: #00ccff;
+}
+
+.wrapper {
+    display: flex;
+    gap: 15px;
+}
+
+.wrapperUser {
+    display: flex;
+    gap: 15px;
+}

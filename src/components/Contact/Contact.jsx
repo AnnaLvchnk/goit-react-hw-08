@@ -1,92 +1,63 @@
-import { useState } from "react";
-import { PropTypes } from "prop-types";
+import { FaUser } from "react-icons/fa";
+import { BsTelephoneFill } from "react-icons/bs";
 import { useDispatch } from "react-redux";
 import { deleteContact } from "../../redux/contacts/operations";
-import PersonIcon from "@mui/icons-material/Person";
-import PhoneIcon from "@mui/icons-material/Phone";
-import DeleteContactDialog from "../DeleteContactDialog/DeleteContactDialog";
-import EditContactDialog from "../EditContactDialog/EditContactDialog";
+import { useState } from "react";
 import toast from "react-hot-toast";
-import { Button, ButtonGroup, ListItem, Card, CardContent, Typography, Box } from "@mui/material";
+import Modal from "../Modal/Modal";
+import css from "./Contact.module.css";
 
-const Contact = ({ contact }) => {
-  const [open, setOpen] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false);
-
-  const handleClickOpenDialog = () => {
-    setOpen(true);
-  };
-  const handleClickOpenEditDialog = () => {
-    setOpenEdit(true);
-  };
-
-  const handleCloseDialog = () => {
-    setOpen(false);
-  };
-  const handleCloseEditDialog = () => {
-    setOpenEdit(false);
-  };
+export default function Contact({ contact: { id, name, number } }) {
+  const [modal, setModal] = useState(false);
 
   const dispatch = useDispatch();
 
-  const handleDelete = () => {
-    dispatch(deleteContact(contact.id));
-    toast.success("Contact deleted from phonebook!");
-  };
+  const handleDeleteContact = () =>
+    dispatch(deleteContact(id))
+      .unwrap()
+      .then(() =>
+        toast.success("Your contact has been deleted !!!", {
+          style: {
+            border: "10px solid yellow",
+            padding: "16px",
+            color: "green",
+            background: "white",
+          },
+        })
+      )
+      .catch(() => {
+        toast.error("Oops, something went wrong!!! Try again", {
+          style: {
+            border: "10px solid yellow",
+            padding: "20px",
+            color: "red",
+            fontSize: "16px",
+            background: "white",
+          },
+        });
+      });
 
   return (
-    <ListItem sx={{ width: "270px", padding: 0 }}>
-      <Card sx={{ width: "270px" }}>
-        <CardContent
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems:"center",
-            gap: "12px",
-            padding: "16px",
-          }}
-        >
-          <Box>
-            <Typography sx={{display:"flex", alignItems:"center", gap:"8px", lineHeight:1, mb:2 }}>
-              <PersonIcon />
-              {contact.name}
-            </Typography>
-            <Typography sx={{display:"flex", alignItems:"center", gap:"8px" }}>
-              <PhoneIcon />
-              {contact.number}
-            </Typography>
-          </Box>
-          <ButtonGroup
-            orientation="vertical"
-            aria-label="Vertical button group"
-            variant="text"
-          >
-            <Button type="button" onClick={handleClickOpenEditDialog}>
-              Edit
-            </Button>
-            <Button type="button" onClick={handleClickOpenDialog}>
-              Delete
-            </Button>
-          </ButtonGroup>
-          <DeleteContactDialog
-            open={open}
-            id={contact.id}
-            handleClose={handleCloseDialog}
-            handleDelete={handleDelete}
-          />
-          <EditContactDialog
-            open={openEdit}
-            contact={contact}
-            handleClose={handleCloseEditDialog}
-          />
-        </CardContent>
-      </Card>
-    </ListItem>
+    <div className={css.container}>
+      <div className={css.wrapper}>
+        <p className={css.name}>
+          <FaUser className={css.icon} />
+          {name}
+        </p>
+        <p className={css.telNumber}>
+          <BsTelephoneFill className={css.icon} />
+          {number}
+        </p>
+      </div>
+
+      <button className={css.button} onClick={() => setModal(true)}>
+        Delete
+      </button>
+      <Modal
+        call={modal}
+        onClose={() => setModal(false)}
+        onClick={handleDeleteContact}
+      />
+    </div>
   );
-};
-
-Contact.propTypes = {
-  contact: PropTypes.object.isRequired,
-};
-
-export default Contact;
+}

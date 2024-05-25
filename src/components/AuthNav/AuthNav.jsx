@@ -1,30 +1,20 @@
 import { NavLink } from "react-router-dom";
-import Link from "@mui/material/Link";
-import { Box } from "@mui/material";
+import clsx from "clsx";
+import css from "./AuthNav.module.css";
 
-const AuthNav = () => {
-  return (
-    <Box sx={{display:"flex", gap:"36px"}}>
-      <Link
-        component={NavLink}
-        to={"/register"}
-        color="inherit"
-        underline="none"
-        variant="h6"
-      >
-        Register
-      </Link>
-      <Link
-        component={NavLink}
-        to={"/login"}
-        color="inherit"
-        underline="none"
-        variant="h6"
-      >
-        Log In
-      </Link>
-    </Box>
-  );
+const getNavLinkClass = ({ isActive }) => {
+  return clsx(css.link, isActive && css.active);
 };
 
-export default AuthNav;
+export default function AuthNav() {
+  return (
+    <nav className={css.wrapperUser}>
+      <NavLink to="/register" className={getNavLinkClass}>
+        Registration
+      </NavLink>
+      <NavLink to="/login" className={getNavLinkClass}>
+        LogIn
+      </NavLink>
+    </nav>
+  );
+}
